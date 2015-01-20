@@ -38,7 +38,6 @@ class Home extends Controller
      */
     public function exampleTwo()
     {
-        Auth::handleLogin();
         // load views
         $this->view->render('home/example_two');
     }
