@@ -43,4 +43,11 @@ class LoginModel
 		}
 
 	}
+
+	public function logout()
+	{
+		setcookie('rememberme', false, time() - (3600 * 24 * 3650), '/', COOKIE_DOMAIN);
+
+		Session::destroy();
+	}
 }
