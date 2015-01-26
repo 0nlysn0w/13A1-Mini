@@ -52,3 +52,25 @@ define('DB_NAME', 'mini');
 define('DB_USER', 'root');
 define('DB_PASS', 'root');
 define('DB_CHARSET', 'utf8');
+
+/**
+ * Configuration for: Cookies
+ */
+// 1209600 seconds = 2 weeks
+define('COOKIE_RUNTIME', 1209600);
+//IMPORTANT: always put a dot in front of the domain, like ".mydomain.com"!
+define('COOKIE_DOMAIN', '.localhost');
+
+/**
+ * Configuration for: Hashing
+ */
+define('HASH_COST_FACTOR', '10');
+
+/**
+ * Configuration for: Feedback messages
+ * This is the place where you define your feed messages
+ */
+define('FEEDBACK_USERNAME_FIELD_EMPTY','Username field was empty!');
+define('FEEDBACK_PASSWORD_FIELD_EMPTY','Password field was empty!');
+define('FEEDBACK_LOGIN_FAILED','Login failed.');
+define('FEEDBACK_PASSWORD_WRONG_3_TIMES', 'You have typed in a wrong password 3 or more times already. Please wait 30 seconds to try again.');

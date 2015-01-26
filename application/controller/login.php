@@ -14,6 +14,13 @@ class Login extends Controller
 
 	public function login()
 	{
-		//geen code.
+		$login_model = $this->loadModel('Login');
+		$login_succesfull = $login_model->login();
+
+		if ($login_succesfull) {
+			header('location: ' . URL . 'dashboard/index');
+		} else {
+			header('location: ' . URL . 'login/index');
+		}
 	}
 }

@@ -52,4 +52,9 @@ class PhotosModel
         }
         
     }
+
+    public function getLonLat()
+    {
+        
+    }
 }
