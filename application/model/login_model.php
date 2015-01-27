@@ -74,7 +74,7 @@ class LoginModel
 		} elseif (!empty($_POST['user_name'])
 			AND strlen($_POST['user_name']) <= 64
 			AND strlen($_POST['user_name']) >= 2
-			AND preg_match('/^[a-Z\d]{2,64}$/i', $_POST['user_name'])
+			AND preg_match('/^[a-z\d]{2,64}$/i', $_POST['user_name'])
 			AND !empty($_POST['user_email'])
 			AND strlen($_POST['user_email']) <= 64
 			AND filter_var($_POST['user_email'], FILTER_VALIDATE_EMAIL)
@@ -82,7 +82,62 @@ class LoginModel
 			AND !empty ($_POST['user_password_repeat'])
 			AND ($_POST['user_password_new'] === $_POST['user_password_repeat'])) {
 			
-			//WAT GOED GAAT
+			$user_name = strip_tags($_POST['user_name']);
+			$user_email = strip_tags($_POST['user_email']);
+
+			$hash_cost_factor = (defined('HASH_COST_FACTOR') ? HASH_COST_FACTOR : null);
+			$user_password_hash = password_hash($_POST['user_password_new'], PASSWORD_DEFAULT, array('cost' => $hash_cost_factor));
+
+			$query = $this->db->prepare("SELECT * FROM users WHERE user_name = :user_name");
+			$query->execute(array(':user_name' => $user_name));
+			$count = $query->rowCount();
+			if ($count == 1) {
+				$_SESSION['feedback_negative'][] = FEEDBACK_USERNAME_ALREADY_TAKEN;
+			}
+
+			$query = $this->db->prepare("SELECT * FROM users WHERE user_email = :user_email");
+			$query->execute(array(':user_email' => $user_email));
+			$count = $query->rowCount();
+			if ($count == 1) {
+				$_SESSION['feedback_negative'][] = FEEDBACK_EMAIL_ALREADY_TAKEN;
+			}
+
+			$user_activation_hash = sha1(uniqid(mt_rand(), true));
+			$user_creation_timestamp = time();
+
+			$sql = "INSERT INTO users (user_name, user_password_hash, user_email, user_creation_timestamp, user_activation_hash)
+					VALUES (:user_name, :user_password_hash, :user_email, :user_creation_timestamp, :user_activation_hash)";
+			$query = $this->db->prepare($sql);
+			$query->execute(array(':user_name' => $user_name,
+								  ':user_password_hash' => $user_password_hash,
+								  ':user_email' => $user_email,
+								  ':user_creation_timestamp' => $user_creation_timestamp,
+								  ':user_activation_hash' => $user_activation_hash));
+			$count = $query->rowCount();
+			if ($count != 1) {
+				$_SESSION['feedback_negative'][] = FEEDBACK_ACCOUNT_CREATION_FAILED;
+				return false;
+			}
+
+			$query = $this->db->prepare("SELECT user_id FROM users WHERE user_name = :user_name");
+			$query->execute(array(':user_name' => $user_name));
+			if ($query->rowCount() != 1) {
+				$_SESSION['feedback_negative'][] = FEEDBACK_UNKOWN_ERROR;
+				return false;
+			}
+			$result_user_row = $query->fetch();
+			$user_id = $result_user_row->user_id;
+
+			if ($this->sendVerificationEmail($user_id, $user_email, $user_activation_hash)) {
+				$_SESSION['feedback_positive'][] = FEEDBACK_ACCOUNT_SUCCESFULLY_CREATED;
+				return true;
+			} else {
+				$query = $this->db->prepare("DELETE FROM users WHERE user_id = :last_inserted_id");
+				$query->execute(array(':last_inserted_id' => $user_id));
+				$_SESSION['feedback_negative'][] = FEEDBACK_VERIFICATION_EMAIL_SENDING_FAILED;
+				return false;
+			}
+
 		} else {
 			$_SESSION['feedback_negative'][] = FEEDBACK_UNKOWN_ERROR;
 		}

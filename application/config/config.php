@@ -81,3 +81,10 @@ define('FEEDBACK_USERNAME_DOES_NOT_FIT_PATTERN', 'Username does not fit the name
 define('FEEDBACK_EMAIL_FIELD_EMPTY', 'Email field was empty!');
 define('FEEDBACK_EMAIL_TOO_LONG', 'Email cannot be longer than 64 characters');
 define('FEEDBACK_EMAIL_DOES_NOT_FIT_PATTERN', 'Sorry, your chosen email does not fit into the email naming pattern');
+define('FEEDBACK_UNKOWN_ERROR', 'WTF?');
+define('FEEDBACK_USERNAME_ALREADY_TAKEN', 'Sorry, that username is already taken. Please choose another one.');
+define('FEEDBACK_EMAIL_ALREADY_TAKEN', 'Sorry, that email was already used. Please choose another one.');
+define('FEEDBACK_ACCOUNT_CREATION_FAILED', 'Sorry, your registration failed. Please go back and try again.');
+define('FEEDBACK_ACCOUNT_SUCCESFULLY_CREATED', 'Your account has been succesfully created and we have sent you an email.');
+define('FEEDBACK_VERIFICATION_EMAIL_SENDING_FAILED', 'Sorry, we could not send you a verification mail. Your account has NOT been created.');
+define('FEEDBACK_VERIFICATION_EMAIL_SENDING_SUCCESFULL', 'A verification mail has been sent succesfully.');
